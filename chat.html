@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat com Atendente IA</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+    input, button { margin-top: 10px; width: 100%; }
+  </style>
+</head>
+<body>
+  <h2>Atendimento Inteligente</h2>
+  <div id="chat"></div>
+  <input type="text" id="msg" placeholder="Digite sua dúvida...">
+  <button onclick="enviar()">Enviar</button>
+
+  <script>
+    async function enviar() {
+      const input = document.getElementById('msg');
+      const chat = document.getElementById('chat');
+      const texto = input.value;
+      chat.innerHTML += `<p><strong>Você:</strong> ${texto}</p>`;
+      input.value = '';
+
+      const resposta = await fetch('https://n8n-4l23.onrender.com/webhook/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pergunta: texto })
+      }).then(res => res.json());
+
+      chat.innerHTML += `<p><strong>IA:</strong> ${resposta.resposta}</p>`;
+    }
+  </script>
+</body>
+</html>
