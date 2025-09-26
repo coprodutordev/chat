@@ -4,13 +4,17 @@
   <meta charset="UTF-8">
   <title>Chat com Atendente IA</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
-    input, button { margin-top: 10px; width: 100%; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; background: #fff; }
+    input, button { margin-top: 10px; width: 100%; padding: 10px; font-size: 16px; }
+    button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .user { color: #333; }
+    .ia { color: #007bff; }
   </style>
 </head>
 <body>
-  <h2>Atendimento Inteligente</h2>
+  <h2>🤖 Atendimento Inteligente</h2>
   <div id="chat"></div>
   <input type="text" id="msg" placeholder="Digite sua dúvida...">
   <button onclick="enviar()">Enviar</button>
@@ -19,17 +23,27 @@
     async function enviar() {
       const input = document.getElementById('msg');
       const chat = document.getElementById('chat');
-      const texto = input.value;
-      chat.innerHTML += `<p><strong>Você:</strong> ${texto}</p>`;
+      const texto = input.value.trim();
+
+      if (!texto) return;
+
+      chat.innerHTML += `<p class="user"><strong>Você:</strong> ${texto}</p>`;
       input.value = '';
+      chat.scrollTop = chat.scrollHeight;
 
-      const resposta = await fetch('https://n8n-4l23.onrender.com/webhook/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pergunta: texto })
-      }).then(res => res.json());
+      try {
+        const resposta = await fetch('https://n8n-4l23.onrender.com/webhook/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pergunta: texto })
+        }).then(res => res.json());
 
-      chat.innerHTML += `<p><strong>IA:</strong> ${resposta.resposta}</p>`;
+        chat.innerHTML += `<p class="ia"><strong>IA:</strong> ${resposta.resposta || 'Desculpe, não consegui entender.'}</p>`;
+        chat.scrollTop = chat.scrollHeight;
+      } catch (error) {
+        chat.innerHTML += `<p class="ia"><strong>IA:</strong> Erro ao conectar com o servidor.</p>`;
+        console.error(error);
+      }
     }
   </script>
 </body>
