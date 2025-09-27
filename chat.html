@@ -26,7 +26,7 @@
       addMsg("Você: " + text, "user");
       input.value = "";
 
-      const res = await fetch("https://SEU_DOMINIO/webhook/chat", {
+      const res = await fetch("https://coprodutordev.github.io/chat/chat.html", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text })
